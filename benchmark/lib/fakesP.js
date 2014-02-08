@@ -20,6 +20,21 @@ else if (global.useKew) {
         }
     }
 }
+else if (global.useES6) {
+    var slicer = [].slice;
+    var lifter = function lifter(nodefn) {
+        return function() {
+            var args = slicer.call(arguments);
+            return new Promise(function(resolve, reject) {
+                args[args.length++] = function(err, res) {
+                    if (err) reject(err);
+                    else resolve(res);
+                };
+                nodefn.apply(this, args);
+            });
+        }
+    }
+}
 else if( global.useLiar) {
     var lifter = require("liar").denodify;
 }
